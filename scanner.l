@@ -1,35 +1,33 @@
 %{
     #include <stdio.h>
+    #include <string.h>
+    #include "parser.tab.h" /* the tokens */
 %}
 
-/* floatsigned: -?{number}*\.{number}+([eE]{intsigned})? */
- 
-digit [0-9]
-number {digit}+
-intsigned -?{number}
-floatsigned -?(({number}+([\.]|[\,]){number}*))
-identifier [a-zA-Z_][a-zA-Z0-9_]*
-
-
-/* rules section */
-%%
-
-[6-9][0-9]{9} {printf("Mobile number\n");}
-{intsigned} {printf("Integer\n");}
-{floatsigned} {printf("Float\n");}
-{identifier} {printf("Identifier\n");}
-.+ {printf("Invalid\n");}
+DIGIT [0-9]
+ID [a-zA-Z_][a-zA-Z0-9_]*
 
 %%
 
-int yywrap();
+":="        { return (ASSGNOP); }
+{DIGIT}+    { return (INT); }  
+do          { return (DO); }
+else        { return (ELSE); }
+end         { return (END); }
+fi          { return (FI); }
+if          { return (IF); }
+in          { return (IN); }
+integer     { return (INTEGER); }
+let         { return (LET); }
+read        { return (READ); }
+skip        { return (SKIP); }
+then        { return (THEN); }
+while       { return (WHILE); }
+write       { return (WRITE); }
+{ID}        { return IDENTIFIER; }
+[ \t\n]+    /* ignore whitespace */
+.           { return yytext[0]; }
 
-int main() {
-    yylex();
+%%
 
-    return 0;
-};
-
-int yywrap(){
-    return 1;
-}
+int yywrap() {}
