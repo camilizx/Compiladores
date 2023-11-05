@@ -12,10 +12,10 @@
 %%
 
 input:
-|   input line  { printf ("Programa sintaticamente correto!\n"); }
+|   input line
 ;
 
-line:     '\n'	{ printf ("Programa sintaticamente correto!\n"); }
+line:     '\n'			{;}
 | program '\n'  { printf ("Programa sintaticamente correto!\n"); }
 ;
 

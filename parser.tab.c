@@ -1135,26 +1135,20 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 3: /* input: input line  */
-#line 15 "parser.y"
-                { printf ("Programa sintaticamente correto!\n"); }
-#line 1142 "parser.tab.c"
-    break;
-
   case 4: /* line: '\n'  */
 #line 18 "parser.y"
-                { printf ("Programa sintaticamente correto!\n"); }
-#line 1148 "parser.tab.c"
+                                {;}
+#line 1142 "parser.tab.c"
     break;
 
   case 5: /* line: program '\n'  */
 #line 19 "parser.y"
                 { printf ("Programa sintaticamente correto!\n"); }
-#line 1154 "parser.tab.c"
+#line 1148 "parser.tab.c"
     break;
 
 
-#line 1158 "parser.tab.c"
+#line 1152 "parser.tab.c"
 
       default: break;
     }

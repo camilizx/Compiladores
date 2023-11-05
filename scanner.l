@@ -25,8 +25,8 @@ then        { return (THEN); }
 while       { return (WHILE); }
 write       { return (WRITE); }
 {ID}        { return IDENTIFIER; }
-[ \t\n]+    /* ignore whitespace */
-.           { return yytext[0]; }
+[ \t]+		{;}
+.|\n		{return yytext[0];}
 
 %%
 
