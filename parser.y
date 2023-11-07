@@ -11,15 +11,8 @@
 
 %%
 
-input:
-|   input line
+program: LET declarations IN commands END  { printf ("Programa sintaticamente correto!\n"); }
 ;
-
-line:     '\n'			{;}
-| program '\n'  { printf ("Programa sintaticamente correto!\n"); }
-;
-
-program: LET declarations IN commands END ;
 
 declarations: /* empty */
 |   INTEGER id_seq IDENTIFIER '.' 
@@ -56,9 +49,12 @@ exp: INT
 
 %%
 
-int main() {
+int main(int argc, char **argv) {
+    FILE *yyin;
+    yyin = fopen("programa.txt", "r");
     yyparse();
-
+    fclose(yyin);
+    
     return 0;
 }
 
