@@ -26,7 +26,7 @@ while       { return (WHILE); }
 write       { return (WRITE); }
 {ID}        { return IDENTIFIER; }
 [ \t\n]+	{;}
-.|\n		{return yytext[0];}
+.		    {return yytext[0];}
 
 %%
 

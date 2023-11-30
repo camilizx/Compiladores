@@ -49,11 +49,9 @@ exp: INT
 
 %%
 
-int main(int argc, char **argv) {
-    FILE *yyin;
-    yyin = fopen("programa.txt", "r");
+int main() {
+    
     yyparse();
-    fclose(yyin);
     
     return 0;
 }

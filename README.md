@@ -1,11 +1,25 @@
 # Compiladores
 
-Para testar o programa utilize os seguintes comandos:
+Compilador implementado utilizando flex e bison
 
-1 - flex scanner.l
+# Instruções
 
-2 - bison -d -t parser.y
+Clone este repositório. Você precisa que o flex, bison, e gcc já estejam instalados na sua máquina.
 
-3 - gcc lex.yy.c parser.tab.c (compila e gera o arquivo a.out)
+Para instalar o flex e bison: 
 
-4 - ./a.out <programa.txt (rodar o programa com o arquivo desejado)
+```
+sudo apt-get update 
+sudo apt-get upgrade 
+sudo apt-get install flex bison
+
+which flex  /*Para verificar que o flex esteja instalado*/
+which bison /*Para verificar que o bison esteja instalado*/
+```
+
+## Para testar o programa utilize os seguintes comandos:
+
+1. flex scanner.l
+2. bison -d -t parser.y
+3. gcc lex.yy.c parser.tab.c (compila e gera o arquivo a.out)
+4. ./a.out <programa.txt (rodar o programa com o arquivo desejado)
