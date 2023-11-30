@@ -1,10 +1,10 @@
 # Compiladores
 
-Compilador implementado utilizando flex e bison
+Compilador implementado utilizando flex e bison.
 
 # Instruções
 
-Clone este repositório. Você precisa que o flex, bison, e gcc já estejam instalados na sua máquina.
+Clone este repositório. Você precisa que o flex, bison, e gcc/g++ já estejam instalados na sua máquina.
 
 Para instalar o flex e bison: 
 
@@ -12,9 +12,27 @@ Para instalar o flex e bison:
 sudo apt-get update 
 sudo apt-get upgrade 
 sudo apt-get install flex bison
+```
 
-which flex  /*Para verificar que o flex esteja instalado*/
-which bison /*Para verificar que o bison esteja instalado*/
+Para verificar se flex e o bison estão instalados: 
+
+```
+which flex
+which bison
+```
+
+Para instalar o gcc/g++:
+
+```
+sudo apt-get install gcc
+sudo apt-get install g++
+```
+
+Para verificar a versão instalada:
+
+```
+gcc --version
+g++ --version
 ```
 
 ## Para testar o programa utilize os seguintes comandos:
