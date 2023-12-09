@@ -1,34 +1,69 @@
 %{
-    #include <stdio.h>
-    #include <string.h>
-    #include <stdlib.h>
-    #include "parser.tab.h" /* the tokens */
-    #include "Simple.tab.h" /* for token definitions and yylval */
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include "parser.tab.h" /* os tokens */
+#include "Simple.tab.h" /* para definições de tokens e yylval */
 
-    #define YYDEBUG 1 /* For debugging */
-    install ( char *sym name )
-    { symrec *s;
-    s = getsym (sym name);
+#define YYDEBUG 1 /* Para depuração */
+
+// Definições do módulo de símbolos
+struct symrec {
+    char *name;
+    struct symrec *next;
+};
+typedef struct symrec symrec;
+
+symrec *symtable = (symrec *)0;
+
+symrec *putsym(char *symname) {
+    symrec *ptr;
+    ptr = (symrec *)malloc(sizeof(symrec));
+    ptr->name = (char *)malloc(strlen(symname) + 1);
+    strcpy(ptr->name, symname);
+    ptr->next = (struct symrec *)symtable;
+    symtable = ptr;
+    return ptr;
+}
+
+symrec *getsym(char *symname) {
+    symrec *ptr;
+    for (ptr = symtable; ptr != (symrec *)0; ptr = (symrec *)ptr->next)
+        if (strcmp(ptr->name, symname) == 0)
+            return ptr;
+    return 0;
+}
+
+install(char *symname) {
+    symrec *s;
+    s = getsym(symname);
     if (s == 0)
-    s = putsym (sym name);
-    else { errors++;
-    printf( ”%s is already defined\n”, sym name ); } }
-    context check( char *sym name )
-    { if ( getsym( sym name ) == 0 )
-    printf( ”%s is an undeclared identifier\n”, sym name ); }
+        s = putsym(symname);
+    else {
+        errors++;
+        printf("%s is already defined\n", symname);
+    }
+}
+
+context check(char *symname) {
+    if (getsym(symname) == 0)
+        printf("%s is an undeclared identifier\n", symname);
+}
+
 %}
 
 DIGIT [0-9]
 ID [a-zA-Z_][a-zA-Z0-9_]*
 
 %union { /* SEMANTIC RECORD */
-char *id; /* For returning identifiers */}
+    char *id; /* For returning identifiers */
+}
+
 %token INT SKIP IF THEN ELSE FI WHILE DO END
 %token <id> IDENT /* Simple identifier */
-%left ’-’ ’+’
-%left ’*’ ’/’
-%right ’ˆ’
-
+%left '-' '+'
+%left '*' '/'
+%right '^'
 
 %%
 
@@ -52,16 +87,16 @@ write       { return (WRITE); }
 .		    {return yytext[0];}
 
 declarations : /* empty */
-| INTEGER id seq IDENTIFIER ’.’ { install( $3 ); }
-;
+    | INTEGER id seq IDENTIFIER '.' { install( $3 ); }
+    ;
 id seq : /* empty */
-| id seq IDENTIFIER ’,’ { install( $2 ); }
-;
+    | id seq IDENTIFIER ',' { install( $2 ); }
+    ;
 command : SKIP
-| READ IDENTIFIER { context check( $2 ); }
-| IDENT ASSGNOP exp { context check( $2 ); }
+    | READ IDENTIFIER { context check( $2 ); }
+    | IDENT ASSGNOP exp { context check( $2 ); }
 exp : INT
-| IDENT { context check( $2 ); }
+    | IDENT { context check( $2 ); }
 
 %%
 
