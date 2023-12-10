@@ -69,9 +69,60 @@
 /* First part of user prologue.  */
 #line 1 "parser.y"
 
-    #include <stdio.h>
+    #include <stdlib.h> /* For malloc in symbol table */
+    #include <string.h> /* For strcmp in symbol table */
+    #include <stdio.h> /* For error messages */
 
-#line 75 "parser.tab.c"
+    int errors = 0;
+
+    //TODO: Implementar tabela de símbolos
+    typedef struct symrec {
+        char *name;             /* name of symbol */
+        int offset;             /* data offset    */
+        struct symrec *next;    /* link field     */
+    } symrec;
+
+    symrec *symtable = (symrec *)0;
+    symrec *putsym(char *symname);
+    symrec *getsym(char *symname);
+
+    symrec *putsym(char *symname) {
+        symrec *ptr;
+        ptr = (symrec *)malloc(sizeof(symrec));
+        ptr->name = (char *)malloc(strlen(symname) + 1);
+        strcpy(ptr->name, symname);
+        //ptr->offset = data_location(); adiciona essa linha quando faz o modulo de geração de código
+        ptr->next = (struct symrec *)symtable;
+        symtable = ptr;
+        return ptr;
+}
+
+    symrec *getsym(char *symname) {
+        symrec *ptr;
+        for (ptr = symtable; ptr != (symrec *)0; ptr = (symrec *)ptr->next)
+            if (strcmp(ptr->name, symname) == 0)
+                return ptr;
+        return 0;
+    }
+    //-------------------------------------------------------------
+
+    void install(char *symname) {
+        symrec *s;
+        s = getsym(symname);
+        if (s == 0)
+            s = putsym(symname);
+        else {
+            errors++;
+            printf("%s is already defined\n", symname);
+        }
+    }
+
+    void context_check(char *symname) {
+        if (getsym(symname) == 0)
+            printf("%s is an undeclared identifier\n", symname);
+    }
+
+#line 126 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -105,7 +156,7 @@ enum yysymbol_kind_t
   YYSYMBOL_LET = 3,                        /* LET  */
   YYSYMBOL_INTEGER = 4,                    /* INTEGER  */
   YYSYMBOL_IN = 5,                         /* IN  */
-  YYSYMBOL_INT = 6,                        /* INT  */
+  YYSYMBOL_NUMBER = 6,                     /* NUMBER  */
   YYSYMBOL_SKIP = 7,                       /* SKIP  */
   YYSYMBOL_IF = 8,                         /* IF  */
   YYSYMBOL_THEN = 9,                       /* THEN  */
@@ -525,9 +576,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    14,    14,    17,    18,    21,    22,    25,    26,    29,
-      30,    31,    32,    33,    34,    37,    38,    39,    40,    41,
-      42,    43,    44,    45,    46,    47
+       0,    71,    71,    74,    75,    78,    79,    82,    83,    86,
+      87,    88,    89,    90,    91,    94,    95,    96,    97,    98,
+      99,   100,   101,   102,   103,   104
 };
 #endif
 
@@ -544,9 +595,9 @@ static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "\"invalid token\"", "LET", "INTEGER", "IN",
-  "INT", "SKIP", "IF", "THEN", "ELSE", "FI", "END", "WHILE", "DO", "READ",
-  "WRITE", "ASSGNOP", "IDENTIFIER", "'-'", "'+'", "'*'", "'/'", "'^'",
-  "'.'", "','", "';'", "'<'", "'='", "'>'", "'('", "')'", "$accept",
+  "NUMBER", "SKIP", "IF", "THEN", "ELSE", "FI", "END", "WHILE", "DO",
+  "READ", "WRITE", "ASSGNOP", "IDENTIFIER", "'-'", "'+'", "'*'", "'/'",
+  "'^'", "'.'", "','", "';'", "'<'", "'='", "'>'", "'('", "')'", "$accept",
   "program", "declarations", "id_seq", "commands", "command", "exp", YY_NULLPTR
 };
 
@@ -1132,13 +1183,43 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: LET declarations IN commands END  */
-#line 14 "parser.y"
+#line 71 "parser.y"
                                            { printf ("Programa sintaticamente correto!\n"); }
-#line 1138 "parser.tab.c"
+#line 1189 "parser.tab.c"
+    break;
+
+  case 4: /* declarations: INTEGER id_seq IDENTIFIER '.'  */
+#line 75 "parser.y"
+                                                { install( (yyvsp[-1].id) ); }
+#line 1195 "parser.tab.c"
+    break;
+
+  case 6: /* id_seq: id_seq IDENTIFIER ','  */
+#line 79 "parser.y"
+                                                { install( (yyvsp[-1].id) );}
+#line 1201 "parser.tab.c"
+    break;
+
+  case 10: /* command: READ IDENTIFIER  */
+#line 87 "parser.y"
+                                                { context_check( (yyvsp[0].id) ); }
+#line 1207 "parser.tab.c"
+    break;
+
+  case 12: /* command: IDENTIFIER ASSGNOP exp  */
+#line 89 "parser.y"
+                                                { context_check( (yyvsp[-2].id) );}
+#line 1213 "parser.tab.c"
+    break;
+
+  case 16: /* exp: IDENTIFIER  */
+#line 95 "parser.y"
+                                                { context_check( (yyvsp[0].id) ); }
+#line 1219 "parser.tab.c"
     break;
 
 
-#line 1142 "parser.tab.c"
+#line 1223 "parser.tab.c"
 
       default: break;
     }
@@ -1331,11 +1412,18 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 50 "parser.y"
+#line 107 "parser.y"
 
 
 int main() {
-    
+
+    /*
+     *  # if YYDEBUG == 1
+     *  extern int yydebug;
+     *  yydebug = 1;
+     *  # endif
+     */
+
     yyparse();
     
     return 0;

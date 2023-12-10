@@ -57,7 +57,7 @@ extern int yydebug;
     LET = 258,                     /* LET  */
     INTEGER = 259,                 /* INTEGER  */
     IN = 260,                      /* IN  */
-    INT = 261,                     /* INT  */
+    NUMBER = 261,                  /* NUMBER  */
     SKIP = 262,                    /* SKIP  */
     IF = 263,                      /* IF  */
     THEN = 264,                    /* THEN  */
@@ -76,7 +76,16 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 56 "parser.y"
+ 
+    char *id; /* For returning identifiers */
+
+#line 86 "parser.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

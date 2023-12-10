@@ -1,0 +1,5 @@
+let 
+    integer n,x,n.
+in
+    read n;
+end

@@ -764,7 +764,7 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 13 "scanner.l"
-{ return (INT); }  
+{ return (NUMBER); }  
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
@@ -834,7 +834,7 @@ YY_RULE_SETUP
 case 16:
 YY_RULE_SETUP
 #line 27 "scanner.l"
-{ return IDENTIFIER; }
+{ yylval.id = (char *) strdup(yytext); return IDENTIFIER; }
 	YY_BREAK
 case 17:
 /* rule 17 can match eol */
@@ -1860,4 +1860,6 @@ void yyfree (void * ptr )
 #line 31 "scanner.l"
 
 
+/* recomendavel declarar sempre
+   funcao yywrap () */
 int yywrap() {}

@@ -10,7 +10,7 @@ ID [a-zA-Z_][a-zA-Z0-9_]*
 %%
 
 ":="        { return (ASSGNOP); }
-{DIGIT}+    { return (INT); }  
+{DIGIT}+    { return (NUMBER); }  
 do          { return (DO); }
 else        { return (ELSE); }
 end         { return (END); }
@@ -24,10 +24,12 @@ skip        { return (SKIP); }
 then        { return (THEN); }
 while       { return (WHILE); }
 write       { return (WRITE); }
-{ID}        { return IDENTIFIER; }
+{ID}        { yylval.id = (char *) strdup(yytext); return IDENTIFIER; }
 [ \t\n]+	{;}
 .		    {return yytext[0];}
 
 %%
 
+/* recomendavel declarar sempre
+   funcao yywrap () */
 int yywrap() {}
