@@ -3,7 +3,7 @@ let
 in
     read n;
 
-    if n < 10 
+    if j < 10 
     then x := 1;
     else skip; 
     fi;

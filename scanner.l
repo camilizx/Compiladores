@@ -1,7 +1,7 @@
 %{
     #include <stdio.h>
     #include <string.h>
-    #include "parser.tab.h" /* the tokens */
+    #include "parser.tab.h" /*the tokens*/
 %}
 
 DIGIT [0-9]

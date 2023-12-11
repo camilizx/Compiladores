@@ -72,39 +72,29 @@
     #include <stdlib.h> /* For malloc in symbol table */
     #include <string.h> /* For strcmp in symbol table */
     #include <stdio.h> /* For error messages */
+    #include "symtable.h"
 
     int errors = 0;
 
-    //TODO: Implementar tabela de símbolos
-    typedef struct symrec {
-        char *name;             /* name of symbol */
-        int offset;             /* data offset    */
-        struct symrec *next;    /* link field     */
-    } symrec;
+    //TODO: Modulo de geração de código
+    /*
+    int data_offset = 0;
+    int data_location() { return data_offset++; }
 
-    symrec *symtable = (symrec *)0;
-    symrec *putsym(char *symname);
-    symrec *getsym(char *symname);
+    int code_offset = 0;
+    int reserve_loc() { return code_offset++; }
+    int gen_label() { return code_offset; }
 
-    symrec *putsym(char *symname) {
-        symrec *ptr;
-        ptr = (symrec *)malloc(sizeof(symrec));
-        ptr->name = (char *)malloc(strlen(symname) + 1);
-        strcpy(ptr->name, symname);
-        //ptr->offset = data_location(); adiciona essa linha quando faz o modulo de geração de código
-        ptr->next = (struct symrec *)symtable;
-        symtable = ptr;
-        return ptr;
-}
-
-    symrec *getsym(char *symname) {
-        symrec *ptr;
-        for (ptr = symtable; ptr != (symrec *)0; ptr = (symrec *)ptr->next)
-            if (strcmp(ptr->name, symname) == 0)
-                return ptr;
-        return 0;
+    void gen_code( enum code_ops operation, int arg ) { 
+        code[code_offset].op = operation;
+        code[code_offset++].arg = arg;
     }
-    //-------------------------------------------------------------
+
+    void back_patch( int addr, enum code_ops operation, int arg ) {
+        code[addr].op = operation;
+        code[addr].arg = arg;
+    }
+    */
 
     void install(char *symname) {
         symrec *s;
@@ -122,7 +112,7 @@
             printf("%s is an undeclared identifier\n", symname);
     }
 
-#line 126 "parser.tab.c"
+#line 116 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -576,9 +566,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    71,    71,    74,    75,    78,    79,    82,    83,    86,
-      87,    88,    89,    90,    91,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   103,   104
+       0,    61,    61,    64,    65,    68,    69,    72,    73,    76,
+      77,    78,    79,    80,    81,    84,    85,    86,    87,    88,
+      89,    90,    91,    92,    93,    94
 };
 #endif
 
@@ -1183,43 +1173,43 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* program: LET declarations IN commands END  */
-#line 71 "parser.y"
+#line 61 "parser.y"
                                            { printf ("Programa sintaticamente correto!\n"); }
-#line 1189 "parser.tab.c"
+#line 1179 "parser.tab.c"
     break;
 
   case 4: /* declarations: INTEGER id_seq IDENTIFIER '.'  */
-#line 75 "parser.y"
+#line 65 "parser.y"
                                                 { install( (yyvsp[-1].id) ); }
-#line 1195 "parser.tab.c"
+#line 1185 "parser.tab.c"
     break;
 
   case 6: /* id_seq: id_seq IDENTIFIER ','  */
-#line 79 "parser.y"
+#line 69 "parser.y"
                                                 { install( (yyvsp[-1].id) );}
-#line 1201 "parser.tab.c"
+#line 1191 "parser.tab.c"
     break;
 
   case 10: /* command: READ IDENTIFIER  */
-#line 87 "parser.y"
+#line 77 "parser.y"
                                                 { context_check( (yyvsp[0].id) ); }
-#line 1207 "parser.tab.c"
+#line 1197 "parser.tab.c"
     break;
 
   case 12: /* command: IDENTIFIER ASSGNOP exp  */
-#line 89 "parser.y"
+#line 79 "parser.y"
                                                 { context_check( (yyvsp[-2].id) );}
-#line 1213 "parser.tab.c"
+#line 1203 "parser.tab.c"
     break;
 
   case 16: /* exp: IDENTIFIER  */
-#line 95 "parser.y"
+#line 85 "parser.y"
                                                 { context_check( (yyvsp[0].id) ); }
-#line 1219 "parser.tab.c"
+#line 1209 "parser.tab.c"
     break;
 
 
-#line 1223 "parser.tab.c"
+#line 1213 "parser.tab.c"
 
       default: break;
     }
@@ -1412,7 +1402,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 107 "parser.y"
+#line 97 "parser.y"
 
 
 int main() {

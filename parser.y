@@ -2,39 +2,29 @@
     #include <stdlib.h> /* For malloc in symbol table */
     #include <string.h> /* For strcmp in symbol table */
     #include <stdio.h> /* For error messages */
+    #include "symtable.h"
 
     int errors = 0;
 
-    //TODO: Implementar tabela de símbolos
-    typedef struct symrec {
-        char *name;             /* name of symbol */
-        int offset;             /* data offset    */
-        struct symrec *next;    /* link field     */
-    } symrec;
+    //TODO: Modulo de geração de código
+    /*
+    int data_offset = 0;
+    int data_location() { return data_offset++; }
 
-    symrec *symtable = (symrec *)0;
-    symrec *putsym(char *symname);
-    symrec *getsym(char *symname);
+    int code_offset = 0;
+    int reserve_loc() { return code_offset++; }
+    int gen_label() { return code_offset; }
 
-    symrec *putsym(char *symname) {
-        symrec *ptr;
-        ptr = (symrec *)malloc(sizeof(symrec));
-        ptr->name = (char *)malloc(strlen(symname) + 1);
-        strcpy(ptr->name, symname);
-        //ptr->offset = data_location(); adiciona essa linha quando faz o modulo de geração de código
-        ptr->next = (struct symrec *)symtable;
-        symtable = ptr;
-        return ptr;
-}
-
-    symrec *getsym(char *symname) {
-        symrec *ptr;
-        for (ptr = symtable; ptr != (symrec *)0; ptr = (symrec *)ptr->next)
-            if (strcmp(ptr->name, symname) == 0)
-                return ptr;
-        return 0;
+    void gen_code( enum code_ops operation, int arg ) { 
+        code[code_offset].op = operation;
+        code[code_offset++].arg = arg;
     }
-    //-------------------------------------------------------------
+
+    void back_patch( int addr, enum code_ops operation, int arg ) {
+        code[addr].op = operation;
+        code[addr].arg = arg;
+    }
+    */
 
     void install(char *symname) {
         symrec *s;
