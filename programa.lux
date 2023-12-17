@@ -1,6 +1,8 @@
 let
-    integer counter.
-in
-    counter := 2+3;
+    integer counter, n.
+in  
+    read n;
+    counter := 4*n;
+    write n;
     write counter;
 end

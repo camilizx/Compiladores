@@ -78,7 +78,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 36 "parser.y"
+#line 74 "parser.y"
  
     char *id;   /* For returning identifiers */
     int intval; /* For returning integers */

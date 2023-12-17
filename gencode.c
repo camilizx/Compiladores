@@ -59,7 +59,7 @@ void gen_code(struct GC* gc, const char* operacao, const char* id) {
         strcat(codigo, "la a1, ");
         strcat(codigo, id);
         strcat(codigo, "\n");
-        strcat(codigo, "lw a0, 0(a1)\n");
+        strcat(codigo, "sw a0, 0(a1)\n");
     } 
     else if (strcmp(operacao, "write") == 0) {
         strcat(codigo, "lw a0, 0(sp)\n");

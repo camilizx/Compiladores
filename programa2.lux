@@ -1,0 +1,11 @@
+let
+    integer n, x.
+in
+    read n;
+    x := 1;
+    while n > 1 do 
+        x := n*x;
+        n := n-1; 
+    end;
+    write x;
+end

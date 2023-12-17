@@ -1,32 +1,70 @@
 %{
-    #include <stdlib.h>         /* For malloc in symbol table */
-    #include <string.h>         /* For strcmp in symbol table */
+    #include <stdlib.h>         /* For malloc */
+    #include <string.h>         /* For string manipulation */
     #include <stdio.h>          /* For error messages */
     #include "symtable.h"       /* Symbol Table */
     #include "gencode.h"        /* Code Generation */
-    //#include "stackmachine.h"   /* Stack Machine */
+    #include "stack.h"          /* Stack */
     #define YYDEBUG 1           /* For Debugging */
 
-    int errors = 0;
     int yylex();
     int yyerror(char* s);
+    int errors = 0;
+    int while_counter = 0;
+    int if_counter = 0;
 
-    // Criar uma instância de GC
+    /* Criar uma instância de Stack */
+    struct Stack context;
+
+    /* Criar uma instância de GC */ 
     struct GC gc;
+
+    // Função para definir o contexto
+    void set_context(struct Stack *context, char f) {
+        char s[MAX_STRING_SIZE] = "";
+
+        switch (f) {
+            case 'w':
+                snprintf(s, sizeof(s), "while_%d", while_counter++);
+                break;
+            case 'i':
+                snprintf(s, sizeof(s), "if_%d", if_counter++);
+                break;
+        }
+       
+        gen_code(&gc, "label", s);
+        push(context, s);
+    }
+
+    // Função para encerrar o contexto
+    void end_context(struct Stack *context, char f) {
+        char s[MAX_STRING_SIZE*2] = "";
+        
+        snprintf(s, MAX_STRING_SIZE*2, "end_%s", top(context));
+
+        if (f == 'w') {
+            gen_code(&gc, "jump", top(context));
+        }
+
+        gen_code(&gc, "label", s);
+        pop(context);
+    }
 
     /* Install identifier & check if previously defined. */
     void install(char *symname) {
         symrec *s;
         s = getsym(symname);
-        if (s == 0)
+        if (s == 0) {
             s = putsym(symname);
+            gen_code(&gc, "symbol", symname);
+        }
         else {
             errors++;
             printf("%s is already defined\n", symname);
         }
     }
 
-    /* If identifier is defined, generate code */
+    /* If identifier is defined*/
     void context_check(char *symname) {
         if (getsym(symname) == 0)
             printf("%s is an undeclared identifier\n", symname);
@@ -77,7 +115,7 @@ command: SKIP
 |   WRITE exp                                   { gen_code(&gc, "write", ""); }
 |   IDENTIFIER ASSGNOP exp                      { context_check( $1 ); gen_code(&gc, "assign", $1); }
 |   IF exp THEN commands ELSE commands FI
-|   WHILE exp DO commands END
+|   WHILE { set_context(&context, 'w'); } exp DO { char s[MAX_STRING_SIZE*2] = ""; snprintf(s, MAX_STRING_SIZE*2, "end_%s", top(&context)); gen_code(&gc, "check", s); } commands END { end_context(&context, 'w'); }
 ;
 exp: NUMBER                                     { char num_str[20]; // Tamanho arbitrário, ajuste conforme necessário
                                                   sprintf(num_str, "%d", $1);
@@ -106,13 +144,17 @@ int main( int argc, char *argv[] ) {
 
     // Inicializar o vetor de códigos com NULL
     init_code(&gc);
+
+    // Inicializar a pilha de contexto
+    init_stack(&context);
+
     yyparse();
     printf("Parse Completed\n");
 
     if (errors == 0) {
         // Imprimir códigos
-        for (int i = 0; i < MAX_CODE_LENGTH; i++) {
-            printf("%2d: %s\n", i + 1, gc.code[i]);
+        for (int i = 0; i < 40; i++) {
+            printf("%s", gc.code[i]);
         }
     }
     
