@@ -1,17 +1,6 @@
-let 
-    integer n,x,n.
+let
+    integer counter.
 in
-    read n;
-
-    if j < 10 
-    then x := 1;
-    else skip; 
-    fi;
-
-    while n < 10 
-    do x := 5*x; n := n+1; 
-    end;
-    skip;
-    write n;
-    write x;
+    counter := 2+3;
+    write counter;
 end

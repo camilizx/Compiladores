@@ -477,7 +477,7 @@ char *yytext;
 #line 2 "scanner.l"
     #include <stdio.h>
     #include <string.h>
-    #include "parser.tab.h" /* the tokens */
+    #include "parser.tab.h" /*the tokens*/
 #line 482 "lex.yy.c"
 #line 483 "lex.yy.c"
 
@@ -764,7 +764,7 @@ YY_RULE_SETUP
 case 2:
 YY_RULE_SETUP
 #line 13 "scanner.l"
-{ return (NUMBER); }  
+{ yylval.intval = atoi( yytext ); return(NUMBER); } 
 	YY_BREAK
 case 3:
 YY_RULE_SETUP

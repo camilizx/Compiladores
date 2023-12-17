@@ -54,22 +54,22 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    LET = 258,                     /* LET  */
-    INTEGER = 259,                 /* INTEGER  */
-    IN = 260,                      /* IN  */
-    NUMBER = 261,                  /* NUMBER  */
-    SKIP = 262,                    /* SKIP  */
-    IF = 263,                      /* IF  */
-    THEN = 264,                    /* THEN  */
-    ELSE = 265,                    /* ELSE  */
-    FI = 266,                      /* FI  */
-    END = 267,                     /* END  */
-    WHILE = 268,                   /* WHILE  */
-    DO = 269,                      /* DO  */
-    READ = 270,                    /* READ  */
-    WRITE = 271,                   /* WRITE  */
-    ASSGNOP = 272,                 /* ASSGNOP  */
-    IDENTIFIER = 273               /* IDENTIFIER  */
+    IDENTIFIER = 258,              /* IDENTIFIER  */
+    NUMBER = 259,                  /* NUMBER  */
+    IF = 260,                      /* IF  */
+    WHILE = 261,                   /* WHILE  */
+    LET = 262,                     /* LET  */
+    INTEGER = 263,                 /* INTEGER  */
+    IN = 264,                      /* IN  */
+    SKIP = 265,                    /* SKIP  */
+    THEN = 266,                    /* THEN  */
+    ELSE = 267,                    /* ELSE  */
+    FI = 268,                      /* FI  */
+    END = 269,                     /* END  */
+    DO = 270,                      /* DO  */
+    READ = 271,                    /* READ  */
+    WRITE = 272,                   /* WRITE  */
+    ASSGNOP = 273                  /* ASSGNOP  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -78,11 +78,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 46 "parser.y"
+#line 36 "parser.y"
  
-    char *id; /* For returning identifiers */
+    char *id;   /* For returning identifiers */
+    int intval; /* For returning integers */
 
-#line 86 "parser.tab.h"
+#line 87 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -10,7 +10,7 @@ ID [a-zA-Z_][a-zA-Z0-9_]*
 %%
 
 ":="        { return (ASSGNOP); }
-{DIGIT}+    { return (NUMBER); }  
+{DIGIT}+    { yylval.intval = atoi( yytext ); return(NUMBER); } 
 do          { return (DO); }
 else        { return (ELSE); }
 end         { return (END); }
