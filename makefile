@@ -3,7 +3,7 @@ file = bin
 all: build run
 
 run: 
-	./a.out <programa2.lux
+	./a.out <programa4.lux
 
 build: 
 	flex scanner.l

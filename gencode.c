@@ -51,7 +51,9 @@ void gen_code(struct GC* gc, const char* operacao, const char* id) {
         sprintf(codigo, "beqz t0, %s\n", id);
     } 
     else if (strcmp(operacao, "label") == 0) {
-        sprintf(codigo, "%s:\n", id);
+        //sprintf(codigo, "%s:\n", id);
+        strcat(codigo, id);
+        strcat(codigo, ":\n");
     } 
     else if (strcmp(operacao, "read") == 0) {
         strcat(codigo, "li a7, 5\n");

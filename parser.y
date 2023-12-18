@@ -114,8 +114,16 @@ command: SKIP
 |   READ IDENTIFIER                             { context_check( $2 ); gen_code(&gc, "read", $2); }
 |   WRITE exp                                   { gen_code(&gc, "write", ""); }
 |   IDENTIFIER ASSGNOP exp                      { context_check( $1 ); gen_code(&gc, "assign", $1); }
-|   IF exp THEN commands ELSE commands FI
-|   WHILE { set_context(&context, 'w'); } exp DO { char s[MAX_STRING_SIZE*2] = ""; snprintf(s, MAX_STRING_SIZE*2, "end_%s", top(&context)); gen_code(&gc, "check", s); } commands END { end_context(&context, 'w'); }
+|   IF                                          { set_context(&context, 'i'); } 
+        exp      THEN { char s[MAX_STRING_SIZE*2] = ""; 
+                        snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context));
+                        gen_code(&gc, "check", s); } 
+        commands ELSE { char s[MAX_STRING_SIZE*2] = ""; 
+                        snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context)); 
+                        gen_code(&gc, "label", s); } 
+        commands FI   { end_context(&context, 'e'); }
+
+|   WHILE { set_context(&context, 'w'); } exp DO   { char s[MAX_STRING_SIZE*2] = ""; snprintf(s, MAX_STRING_SIZE*2, "end_%s", top(&context)); gen_code(&gc, "check", s); } commands END { end_context(&context, 'w'); }
 ;
 exp: NUMBER                                     { char num_str[20]; // Tamanho arbitrário, ajuste conforme necessário
                                                   sprintf(num_str, "%d", $1);
