@@ -118,13 +118,20 @@ command: SKIP
 |   IF                               { set_context(&context, 'i'); } 
         exp      THEN                { char s[MAX_STRING_SIZE*2] = ""; 
                                        snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context));
-                                       gen_code(&gc, "check", s); } 
-        commands ELSE                { char s[MAX_STRING_SIZE*2] = ""; 
+                                       gen_code(&gc, "check", s); }
+        commands {char s[MAX_STRING_SIZE*2] = ""; 
+                  snprintf(s, MAX_STRING_SIZE*2, "end_%s", top(&context));
+                  gen_code(&gc, "jump", s); } 
+                 ELSE                { char s[MAX_STRING_SIZE*2] = ""; 
                                        snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context)); 
                                        gen_code(&gc, "label", s); } 
         commands FI                  { end_context(&context, 'e'); }
 
-|   WHILE { set_context(&context, 'w'); } exp DO   { char s[MAX_STRING_SIZE*2] = ""; snprintf(s, MAX_STRING_SIZE*2, "end_%s", top(&context)); gen_code(&gc, "check", s); } commands END { end_context(&context, 'w'); }
+|   WHILE                            { set_context(&context, 'w'); } 
+        exp DO                       { char s[MAX_STRING_SIZE*2] = ""; 
+                                       snprintf(s, MAX_STRING_SIZE*2, "end_%s", top(&context)); 
+                                       gen_code(&gc, "check", s); } 
+        commands END                 { end_context(&context, 'w'); }
 ;
 exp: NUMBER                          { char num_str[20]; // Tamanho arbitrário, ajustar conforme necessário
                                        sprintf(num_str, "%d", $1);
