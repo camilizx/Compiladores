@@ -1,8 +1,0 @@
-let
-    integer counter, n.
-in  
-    read n;
-    counter := 4*n;
-    write n;
-    write counter;
-end

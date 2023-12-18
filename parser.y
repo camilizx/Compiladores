@@ -5,6 +5,7 @@
     #include "symtable.h"       /* Symbol Table */
     #include "gencode.h"        /* Code Generation */
     #include "stack.h"          /* Stack */
+    #include "aux.h"            /* Auxiliar Functions */
     #define YYDEBUG 1           /* For Debugging */
 
     int yylex();
@@ -111,31 +112,31 @@ commands: /* empty */
 ;
 
 command: SKIP                                   
-|   READ IDENTIFIER                             { context_check( $2 ); gen_code(&gc, "read", $2); }
-|   WRITE exp                                   { gen_code(&gc, "write", ""); }
-|   IDENTIFIER ASSGNOP exp                      { context_check( $1 ); gen_code(&gc, "assign", $1); }
-|   IF                                          { set_context(&context, 'i'); } 
-        exp      THEN { char s[MAX_STRING_SIZE*2] = ""; 
-                        snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context));
-                        gen_code(&gc, "check", s); } 
-        commands ELSE { char s[MAX_STRING_SIZE*2] = ""; 
-                        snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context)); 
-                        gen_code(&gc, "label", s); } 
-        commands FI   { end_context(&context, 'e'); }
+|   READ IDENTIFIER                  { context_check( $2 ); gen_code(&gc, "read", $2); }
+|   WRITE exp                        { gen_code(&gc, "write", ""); }
+|   IDENTIFIER ASSGNOP exp           { context_check( $1 ); gen_code(&gc, "assign", $1); }
+|   IF                               { set_context(&context, 'i'); } 
+        exp      THEN                { char s[MAX_STRING_SIZE*2] = ""; 
+                                       snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context));
+                                       gen_code(&gc, "check", s); } 
+        commands ELSE                { char s[MAX_STRING_SIZE*2] = ""; 
+                                       snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context)); 
+                                       gen_code(&gc, "label", s); } 
+        commands FI                  { end_context(&context, 'e'); }
 
 |   WHILE { set_context(&context, 'w'); } exp DO   { char s[MAX_STRING_SIZE*2] = ""; snprintf(s, MAX_STRING_SIZE*2, "end_%s", top(&context)); gen_code(&gc, "check", s); } commands END { end_context(&context, 'w'); }
 ;
-exp: NUMBER                                     { char num_str[20]; // Tamanho arbitrário, ajuste conforme necessário
-                                                  sprintf(num_str, "%d", $1);
-                                                  gen_code(&gc, "store_imm", num_str); }
-|   IDENTIFIER                                  { context_check( $1 ); gen_code(&gc, "store", $1); }
-|   exp '<' exp                                 { gen_code(&gc, "less", ""); }
-|   exp '=' exp                                 { gen_code(&gc, "equal", "");}
-|   exp '>' exp                                 { gen_code(&gc, "greater", ""); }
-|   exp '+' exp                                 { gen_code(&gc, "add", ""); }
-|   exp '-' exp                                 { gen_code(&gc, "sub", "");}
-|   exp '*' exp                                 { gen_code(&gc, "mul", ""); }
-|   exp '/' exp                                 { gen_code(&gc, "div", ""); }
+exp: NUMBER                          { char num_str[20]; // Tamanho arbitrário, ajustar conforme necessário
+                                       sprintf(num_str, "%d", $1);
+                                       gen_code(&gc, "store_imm", num_str); }
+|   IDENTIFIER                       { context_check( $1 ); gen_code(&gc, "store", $1); }
+|   exp '<' exp                      { gen_code(&gc, "less", ""); }
+|   exp '=' exp                      { gen_code(&gc, "equal", "");}
+|   exp '>' exp                      { gen_code(&gc, "greater", ""); }
+|   exp '+' exp                      { gen_code(&gc, "add", ""); }
+|   exp '-' exp                      { gen_code(&gc, "sub", "");}
+|   exp '*' exp                      { gen_code(&gc, "mul", ""); }
+|   exp '/' exp                      { gen_code(&gc, "div", ""); }
 |   exp '^' exp
 |   '(' exp ')'
 ;
@@ -148,7 +149,6 @@ int main( int argc, char *argv[] ) {
     ++argv; --argc;
     yyin = fopen( argv[0], "r" );
     /*yydebug = 1;*/
-    errors = 0;
 
     // Inicializar o vetor de códigos com NULL
     init_code(&gc);
@@ -160,10 +160,21 @@ int main( int argc, char *argv[] ) {
     printf("Parse Completed\n");
 
     if (errors == 0) {
-        // Imprimir códigos
-        for (int i = 0; i < 40; i++) {
-            printf("%s", gc.code[i]);
+        char *file = argv[0];
+        const char *nomeArquivo = arquivoSaida(file);
+        FILE *arquivo = fopen(nomeArquivo, "w");
+        // Verifica se o arquivo foi aberto com sucesso
+        if (arquivo == NULL) {
+            perror("Erro ao abrir o arquivo");
+        } else {
+            // Imprime códigos no arquivo
+            for (int i = 0; i < MAX_STRING_SIZE; i++) {
+                if (gc.code[i] != NULL)
+                    fprintf(arquivo, "%s", gc.code[i]);
+            }
         }
+        // Fecha o arquivo
+        fclose(arquivo);
     }
     
     return 0;

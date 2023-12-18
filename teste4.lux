@@ -1,0 +1,6 @@
+let
+    integer a, b, c.
+in  
+    c := 3;
+    write 5;
+end

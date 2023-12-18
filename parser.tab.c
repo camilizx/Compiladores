@@ -75,6 +75,7 @@
     #include "symtable.h"       /* Symbol Table */
     #include "gencode.h"        /* Code Generation */
     #include "stack.h"          /* Stack */
+    #include "aux.h"            /* Auxiliar Functions */
     #define YYDEBUG 1           /* For Debugging */
 
     int yylex();
@@ -140,7 +141,7 @@
             printf("%s is an undeclared identifier\n", symname);
     }
 
-#line 144 "parser.tab.c"
+#line 145 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -601,10 +602,10 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    94,    94,    96,    94,   101,   102,   105,   106,   109,
-     110,   113,   114,   115,   116,   117,   118,   121,   117,   126,
-     126,   126,   128,   131,   132,   133,   134,   135,   136,   137,
-     138,   139,   140
+       0,    95,    95,    97,    95,   102,   103,   106,   107,   110,
+     111,   114,   115,   116,   117,   118,   119,   122,   118,   127,
+     127,   127,   129,   132,   133,   134,   135,   136,   137,   138,
+     139,   140,   141
 };
 #endif
 
@@ -1215,157 +1216,157 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* $@1: %empty  */
-#line 94 "parser.y"
+#line 95 "parser.y"
              { gen_code(&gc, "data", ""); }
-#line 1221 "parser.tab.c"
+#line 1222 "parser.tab.c"
     break;
 
   case 3: /* $@2: %empty  */
-#line 96 "parser.y"
+#line 97 "parser.y"
              { gen_code(&gc, "text", "");}
-#line 1227 "parser.tab.c"
+#line 1228 "parser.tab.c"
     break;
 
   case 4: /* program: LET $@1 declarations IN $@2 commands END  */
-#line 98 "parser.y"
+#line 99 "parser.y"
              { gen_code(&gc, "end", ""); }
-#line 1233 "parser.tab.c"
+#line 1234 "parser.tab.c"
     break;
 
   case 6: /* declarations: INTEGER id_seq IDENTIFIER '.'  */
-#line 102 "parser.y"
+#line 103 "parser.y"
                                                 { install( (yyvsp[-1].id) ); }
-#line 1239 "parser.tab.c"
+#line 1240 "parser.tab.c"
     break;
 
   case 8: /* id_seq: id_seq IDENTIFIER ','  */
-#line 106 "parser.y"
+#line 107 "parser.y"
                                                 { install( (yyvsp[-1].id) ); }
-#line 1245 "parser.tab.c"
+#line 1246 "parser.tab.c"
     break;
 
   case 12: /* command: READ IDENTIFIER  */
-#line 114 "parser.y"
-                                                { context_check( (yyvsp[0].id) ); gen_code(&gc, "read", (yyvsp[0].id)); }
-#line 1251 "parser.tab.c"
+#line 115 "parser.y"
+                                     { context_check( (yyvsp[0].id) ); gen_code(&gc, "read", (yyvsp[0].id)); }
+#line 1252 "parser.tab.c"
     break;
 
   case 13: /* command: WRITE exp  */
-#line 115 "parser.y"
-                                                { gen_code(&gc, "write", ""); }
-#line 1257 "parser.tab.c"
+#line 116 "parser.y"
+                                     { gen_code(&gc, "write", ""); }
+#line 1258 "parser.tab.c"
     break;
 
   case 14: /* command: IDENTIFIER ASSGNOP exp  */
-#line 116 "parser.y"
-                                                { context_check( (yyvsp[-2].id) ); gen_code(&gc, "assign", (yyvsp[-2].id)); }
-#line 1263 "parser.tab.c"
+#line 117 "parser.y"
+                                     { context_check( (yyvsp[-2].id) ); gen_code(&gc, "assign", (yyvsp[-2].id)); }
+#line 1264 "parser.tab.c"
     break;
 
   case 15: /* $@3: %empty  */
-#line 117 "parser.y"
-                                                { set_context(&context, 'i'); }
-#line 1269 "parser.tab.c"
+#line 118 "parser.y"
+                                     { set_context(&context, 'i'); }
+#line 1270 "parser.tab.c"
     break;
 
   case 16: /* $@4: %empty  */
-#line 118 "parser.y"
-                      { char s[MAX_STRING_SIZE*2] = ""; 
-                        snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context));
-                        gen_code(&gc, "check", s); }
-#line 1277 "parser.tab.c"
+#line 119 "parser.y"
+                                     { char s[MAX_STRING_SIZE*2] = ""; 
+                                       snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context));
+                                       gen_code(&gc, "check", s); }
+#line 1278 "parser.tab.c"
     break;
 
   case 17: /* $@5: %empty  */
-#line 121 "parser.y"
-                      { char s[MAX_STRING_SIZE*2] = ""; 
-                        snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context)); 
-                        gen_code(&gc, "label", s); }
-#line 1285 "parser.tab.c"
+#line 122 "parser.y"
+                                     { char s[MAX_STRING_SIZE*2] = ""; 
+                                       snprintf(s, MAX_STRING_SIZE*2, "else_%s", top(&context)); 
+                                       gen_code(&gc, "label", s); }
+#line 1286 "parser.tab.c"
     break;
 
   case 18: /* command: IF $@3 exp THEN $@4 commands ELSE $@5 commands FI  */
-#line 124 "parser.y"
-                      { end_context(&context, 'e'); }
-#line 1291 "parser.tab.c"
+#line 125 "parser.y"
+                                     { end_context(&context, 'e'); }
+#line 1292 "parser.tab.c"
     break;
 
   case 19: /* $@6: %empty  */
-#line 126 "parser.y"
+#line 127 "parser.y"
           { set_context(&context, 'w'); }
-#line 1297 "parser.tab.c"
+#line 1298 "parser.tab.c"
     break;
 
   case 20: /* $@7: %empty  */
-#line 126 "parser.y"
+#line 127 "parser.y"
                                                    { char s[MAX_STRING_SIZE*2] = ""; snprintf(s, MAX_STRING_SIZE*2, "end_%s", top(&context)); gen_code(&gc, "check", s); }
-#line 1303 "parser.tab.c"
+#line 1304 "parser.tab.c"
     break;
 
   case 21: /* command: WHILE $@6 exp DO $@7 commands END  */
-#line 126 "parser.y"
+#line 127 "parser.y"
                                                                                                                                                                                         { end_context(&context, 'w'); }
-#line 1309 "parser.tab.c"
+#line 1310 "parser.tab.c"
     break;
 
   case 22: /* exp: NUMBER  */
-#line 128 "parser.y"
-                                                { char num_str[20]; // Tamanho arbitrário, ajuste conforme necessário
-                                                  sprintf(num_str, "%d", (yyvsp[0].intval));
-                                                  gen_code(&gc, "store_imm", num_str); }
-#line 1317 "parser.tab.c"
+#line 129 "parser.y"
+                                     { char num_str[20]; // Tamanho arbitrário, ajustar conforme necessário
+                                       sprintf(num_str, "%d", (yyvsp[0].intval));
+                                       gen_code(&gc, "store_imm", num_str); }
+#line 1318 "parser.tab.c"
     break;
 
   case 23: /* exp: IDENTIFIER  */
-#line 131 "parser.y"
-                                                { context_check( (yyvsp[0].id) ); gen_code(&gc, "store", (yyvsp[0].id)); }
-#line 1323 "parser.tab.c"
+#line 132 "parser.y"
+                                     { context_check( (yyvsp[0].id) ); gen_code(&gc, "store", (yyvsp[0].id)); }
+#line 1324 "parser.tab.c"
     break;
 
   case 24: /* exp: exp '<' exp  */
-#line 132 "parser.y"
-                                                { gen_code(&gc, "less", ""); }
-#line 1329 "parser.tab.c"
+#line 133 "parser.y"
+                                     { gen_code(&gc, "less", ""); }
+#line 1330 "parser.tab.c"
     break;
 
   case 25: /* exp: exp '=' exp  */
-#line 133 "parser.y"
-                                                { gen_code(&gc, "equal", "");}
-#line 1335 "parser.tab.c"
+#line 134 "parser.y"
+                                     { gen_code(&gc, "equal", "");}
+#line 1336 "parser.tab.c"
     break;
 
   case 26: /* exp: exp '>' exp  */
-#line 134 "parser.y"
-                                                { gen_code(&gc, "greater", ""); }
-#line 1341 "parser.tab.c"
+#line 135 "parser.y"
+                                     { gen_code(&gc, "greater", ""); }
+#line 1342 "parser.tab.c"
     break;
 
   case 27: /* exp: exp '+' exp  */
-#line 135 "parser.y"
-                                                { gen_code(&gc, "add", ""); }
-#line 1347 "parser.tab.c"
+#line 136 "parser.y"
+                                     { gen_code(&gc, "add", ""); }
+#line 1348 "parser.tab.c"
     break;
 
   case 28: /* exp: exp '-' exp  */
-#line 136 "parser.y"
-                                                { gen_code(&gc, "sub", "");}
-#line 1353 "parser.tab.c"
+#line 137 "parser.y"
+                                     { gen_code(&gc, "sub", "");}
+#line 1354 "parser.tab.c"
     break;
 
   case 29: /* exp: exp '*' exp  */
-#line 137 "parser.y"
-                                                { gen_code(&gc, "mul", ""); }
-#line 1359 "parser.tab.c"
+#line 138 "parser.y"
+                                     { gen_code(&gc, "mul", ""); }
+#line 1360 "parser.tab.c"
     break;
 
   case 30: /* exp: exp '/' exp  */
-#line 138 "parser.y"
-                                                { gen_code(&gc, "div", ""); }
-#line 1365 "parser.tab.c"
+#line 139 "parser.y"
+                                     { gen_code(&gc, "div", ""); }
+#line 1366 "parser.tab.c"
     break;
 
 
-#line 1369 "parser.tab.c"
+#line 1370 "parser.tab.c"
 
       default: break;
     }
@@ -1558,7 +1559,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 143 "parser.y"
+#line 144 "parser.y"
 
 
 int main( int argc, char *argv[] ) {
@@ -1567,7 +1568,6 @@ int main( int argc, char *argv[] ) {
     ++argv; --argc;
     yyin = fopen( argv[0], "r" );
     /*yydebug = 1;*/
-    errors = 0;
 
     // Inicializar o vetor de códigos com NULL
     init_code(&gc);
@@ -1579,10 +1579,21 @@ int main( int argc, char *argv[] ) {
     printf("Parse Completed\n");
 
     if (errors == 0) {
-        // Imprimir códigos
-        for (int i = 0; i < 40; i++) {
-            printf("%s", gc.code[i]);
+        char *file = argv[0];
+        const char *nomeArquivo = arquivoSaida(file);
+        FILE *arquivo = fopen(nomeArquivo, "w");
+        // Verifica se o arquivo foi aberto com sucesso
+        if (arquivo == NULL) {
+            perror("Erro ao abrir o arquivo");
+        } else {
+            // Imprime códigos no arquivo
+            for (int i = 0; i < MAX_STRING_SIZE; i++) {
+                if (gc.code[i] != NULL)
+                    fprintf(arquivo, "%s", gc.code[i]);
+            }
         }
+        // Fecha o arquivo
+        fclose(arquivo);
     }
     
     return 0;
